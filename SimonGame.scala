@@ -7,7 +7,7 @@ import scala.language.postfixOps
 import java.io._
 
 // To play MP3 files
-import javazoom.jl.player.Player
+import javazoom.jl.player.Player // jl1.0.jar (JLayer Mp3 library) http://www.javazoom.net/javalayer/sources.html
 
 case class Button(color: String)
 
@@ -19,6 +19,8 @@ object ButtonsManager{
 					 "yellow" -> "cow.mp3",
 					 "green"  -> "pig.mp3"
 	)
+
+	def colors: List[String] = sounds.keys.toList
 
 	def askButton(): Button = {
 		val color = scala.io.StdIn.readLine()
@@ -34,10 +36,8 @@ object ButtonsManager{
 	}
 
 	def playSound(path: String) = {
-		val file = new File(path)
-		val in = new FileInputStream(file.getAbsoluteFile)
-		val input = new BufferedInputStream(in)
-		val player = new Player(input) // jl1.0.jar (JLayer Mp3 library) http://www.javazoom.net/javalayer/sources.html
+		val input = new BufferedInputStream(new FileInputStream(new File(path)))
+		val player = new Player(input)
 		player.play()
 		/*
 		while(true){
@@ -48,14 +48,9 @@ object ButtonsManager{
 
 class SimonGame{
 
-	val redButton = Button("red")
-	val blueButton =  Button("blue")
-	val yellowButton = Button("yellow")
-	val greenButton = Button("green")
+	val buttons:List[Button] = ButtonsManager.colors.map(Button(_))
 
-	val buttons:List[Button] = List(redButton, blueButton, yellowButton, greenButton)
-
-	val infiniteSequence = buttonsGen
+	val infiniteSequence: Stream[Button] = buttonsGen
 
 	def start():Int = play(1) // Start the game
 
@@ -85,6 +80,7 @@ object SimonGame{
 	def main(args: Array[String]){
 		val game = new SimonGame()
 		val score = game.start()
+		ButtonsManager.playSound("coins.mp3")
 		println(s"Result : $score")
 	}
 }
