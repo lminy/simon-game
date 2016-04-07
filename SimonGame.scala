@@ -14,21 +14,27 @@ case class Button(color: String)
 // Interaction - VIEW
 object ButtonsManager{
 
+	val sounds = Map("red"    -> "cat.mp3",
+					 "blue"   -> "dog.mp3",
+					 "yellow" -> "cow.mp3",
+					 "green"  -> "pig.mp3"
+	)
+
 	def askButton(): Button = {
 		val color = scala.io.StdIn.readLine()
-		playSound("coins.mp3")
+		if(sounds contains color) playSound(sounds(color))
 		Button(color)
 	}
 
 	def showSequence(sequence: List[Button]){
-		for(button <- sequence){
-			println(button)
-			playSound("coins.mp3")
+		for(Button(color) <- sequence){
+			println(color)
+			playSound(sounds(color))
 		}
 	}
 
-	def playSound(sound: String) = {
-		val file = new File(sound)
+	def playSound(path: String) = {
+		val file = new File(path)
 		val in = new FileInputStream(file.getAbsoluteFile)
 		val input = new BufferedInputStream(in)
 		val player = new Player(input) // jl1.0.jar (JLayer Mp3 library) http://www.javazoom.net/javalayer/sources.html
