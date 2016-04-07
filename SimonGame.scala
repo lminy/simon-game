@@ -1,20 +1,16 @@
+
 import scala.util.Random
 import scala.util.{Try, Success, Failure}
 import scala.language.postfixOps
 
-class Button
-
-case class RedButton(sound: String) extends Button
-case class BlueButton(sound: String) extends Button
-case class YellowButton(sound: String) extends Button
-case class GreenButton(sound: String) extends Button
+case class Button(color: String)
 
 object SimonGame{
 	def main(args: Array[String]){
-		val redButton = RedButton("red")
-		val blueButton =  BlueButton("blue")
-		val yellowButton = YellowButton("yellow")
-		val greenButton = GreenButton("green")
+		val redButton = Button("red")
+		val blueButton =  Button("blue")
+		val yellowButton = Button("yellow")
+		val greenButton = Button("green")
 
 		val buttons:List[Button] = List(redButton, blueButton, yellowButton, greenButton)
 
@@ -29,15 +25,7 @@ object SimonGame{
 			}
 		}
 
-		def askButton(): Option[Button] = {
-			scala.io.StdIn.readLine() match{
-				case "red" => Some(redButton)
-				case "blue" => Some(blueButton)
-				case "yellow" => Some(yellowButton)
-				case "green" => Some(greenButton)
-				case _ => None
-			}
-		}
+		def askButton(): Button = Button(scala.io.StdIn.readLine())
 
 		val infiniteSequence = buttonsGen
 
@@ -53,13 +41,11 @@ object SimonGame{
 
 		def completeSequence(sequence: List[Button]): Boolean = sequence match {
 			case Nil => true
-			case x::xs if askButton().getOrElse(greenButton) == x => completeSequence(xs)
+			case x::xs if askButton() == x => completeSequence(xs)
 			case _ => false
 		}
 
 		val score = play(1) // Start the game
 		println(s"Résultat : $score")
-
-
 	}
 }
